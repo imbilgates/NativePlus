@@ -1,12 +1,35 @@
 import { useRouter } from "expo-router";
-import React from "react";
-import { View, Text, StyleSheet, Pressable, Platform } from "react-native";
+import React, { useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  Platform,
+  ActivityIndicator,
+} from "react-native";
 import { useTheme } from "@/context/ThemeContext";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
+import { useAuth } from "@/context/AuthContext";
 
-const Login = () => {
+const WelcomePage = () => {
   const router = useRouter();
   const { theme } = useTheme();
+  const { loading, user } = useAuth();
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.replace("/(tabs)"); 
+    }
+  }, [loading, user]);
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -32,7 +55,7 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default WelcomePage;
 
 const styles = StyleSheet.create({
   container: {

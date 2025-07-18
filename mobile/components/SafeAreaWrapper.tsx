@@ -2,6 +2,7 @@ import React from "react";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "@/context/ThemeContext";
+import { StatusBar } from "expo-status-bar"; 
 
 interface SafeAreaWrapperProps {
   children: React.ReactNode;
@@ -19,6 +20,7 @@ const SafeAreaWrapper: React.FC<SafeAreaWrapperProps> = ({ children }) => {
         backgroundColor: theme.background,
       }}
     >
+      <StatusBar style={theme.name === "dark" || theme.name === "forest" ? "light" : "dark"} />
       {children}
     </View>
   );
