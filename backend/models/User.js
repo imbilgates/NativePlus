@@ -21,10 +21,11 @@ const userSchema = new mongoose.Schema(
     },
     profileImage: {
       type: String,
-      default: "",
+      default: "https://firebasestorage.googleapis.com/v0/b/chatwithme-f4d3b.appspot.com/o/profile_images%2Fimage.png?alt=media&token=9397b6c0-b4b7-4d18-ae0a-a15416b3405c",
     },
     dateOfBirth: {
       type: Date,
+      require: false
     },
   },
   { timestamps: true }

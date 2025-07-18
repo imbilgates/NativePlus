@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useTheme } from "@/context/ThemeContext"; // Adjust path if needed
+import { useTheme } from "@/context/ThemeContext";
 
 interface SafeAreaWrapperProps {
   children: React.ReactNode;
@@ -9,7 +9,7 @@ interface SafeAreaWrapperProps {
 
 const SafeAreaWrapper: React.FC<SafeAreaWrapperProps> = ({ children }) => {
   const insets = useSafeAreaInsets();
-  const { theme } = useTheme(); // Use your custom theme
+  const { theme } = useTheme();
 
   return (
     <View

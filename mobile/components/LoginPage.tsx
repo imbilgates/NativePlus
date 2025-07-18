@@ -1,20 +1,44 @@
-import { router } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import {
   TextInput,
   View,
   StyleSheet,
   Text,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { useTheme } from "@/context/ThemeContext";
+import { useRouter } from "expo-router";
+import { loginUser } from "@/services/userService";
+import { useAuth } from "@/context/AuthContext";
+
 
 const LoginPage = () => {
-
   const { theme } = useTheme();
+  const router = useRouter();
 
-  const handleLogin = () => {
-    router.push("/(tabs)/")
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+    const { login } = useAuth();
+
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert("Missing Fields", "Please fill in both email and password.");
+      return;
+    }
+    try {
+      const user = await loginUser({ email, password });
+       await login(user); 
+      router.push("/(tabs)");
+    } catch (err: any) {
+      console.error("Login failed:", err?.response?.data || err.message);
+      Alert.alert(
+        "Login Failed",
+        err?.response?.data?.error || "Something went wrong"
+      );
+    }
   };
 
   return (
@@ -24,17 +48,21 @@ const LoginPage = () => {
 
       <View style={styles.form}>
         <TextInput
-          style={[styles.input, { color: theme.background }]}
+          style={[styles.input, { color: theme.text }]}
           placeholder="Email"
-          placeholderTextColor={theme.background}
+          placeholderTextColor={theme.text}
           keyboardType="email-address"
           autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
         />
         <TextInput
-          style={[styles.input, { color: theme.background }]}
+          style={[styles.input, { color: theme.text }]}
           placeholder="Password"
-          placeholderTextColor={theme.background + "99"}
+          placeholderTextColor={theme.text + "99"}
           secureTextEntry
+          value={password}
+          onChangeText={setPassword}
         />
         <TouchableOpacity
           onPress={handleLogin}
@@ -59,7 +87,6 @@ const LoginPage = () => {
 
 export default LoginPage;
 
-// Reuse styles, colors are injected dynamically
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -90,7 +117,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 16,
     marginBottom: 16,
-    backgroundColor: "#f9f9f9",
   },
   button: {
     paddingVertical: 14,

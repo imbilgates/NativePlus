@@ -1,25 +1,34 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
-import { useTheme } from '@/context/ThemeContext';
-import SignOutButton from './SignOutButton';
+import React from "react";
+import { View, Text, Image, StyleSheet } from "react-native";
+import { useTheme } from "@/context/ThemeContext";
+import SignOutButton from "./SignOutButton";
+import { useAuth } from "@/context/AuthContext";
+import ThemeSwitcher from "./ThemeSwitcher";
 
 const UserProfile = () => {
   const { theme } = useTheme();
-
-  const user = {
-    name: 'Bilgates Dev',
-    email: 'bilgates@example.com',
-    image: 'https://i.pravatar.cc/300',
-  };
+  const { user } = useAuth();
 
   const styles = createStyles(theme);
 
+  if (!user) {
+    return (
+      <View style={styles.container}>
+        <Text style={{ color: theme.text, fontSize: 18 }}>
+          User not logged in
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <Image source={{ uri: user.image }} style={styles.avatar} />
+      <Image source={{ uri: user.profileImage }} style={styles.avatar} />
       <Text style={styles.name}>{user.name}</Text>
       <Text style={styles.email}>{user.email}</Text>
       <SignOutButton />
+      <ThemeSwitcher />
+
     </View>
   );
 };
@@ -29,7 +38,7 @@ export default UserProfile;
 const createStyles = (theme: any) =>
   StyleSheet.create({
     container: {
-      alignItems: 'center',
+      alignItems: "center",
       paddingVertical: 40,
       backgroundColor: theme.background,
       flex: 1,
@@ -44,7 +53,7 @@ const createStyles = (theme: any) =>
     },
     name: {
       fontSize: 22,
-      fontWeight: 'bold',
+      fontWeight: "bold",
       color: theme.text,
     },
     email: {

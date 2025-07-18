@@ -6,11 +6,12 @@ import { themes } from "../constants/theme";
 import { ThemeType, ThemeName } from "../types/theme";
 
 const ThemePicker = () => {
+  
   const { setCustomTheme, theme } = useTheme();
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.label, { color: theme.text }]}>🎨 Select Theme</Text>
+      <Text style={[styles.label, { color: theme.text }]}>Select Theme</Text>
       <Picker
         selectedValue={theme.name}
         onValueChange={(value: ThemeName) => setCustomTheme(value)}

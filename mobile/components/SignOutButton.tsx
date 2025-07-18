@@ -1,17 +1,37 @@
-import React from 'react';
-import { Pressable, Text, StyleSheet } from 'react-native';
-import { router } from 'expo-router';
-import { useTheme } from '@/context/ThemeContext';
+import React from "react";
+import { Pressable, Text, StyleSheet, Alert } from "react-native";
+import { router } from "expo-router";
+import { useTheme } from "@/context/ThemeContext";
+import { useAuth } from "@/context/AuthContext";
 
 const SignOutButton = () => {
   const { theme } = useTheme();
+  const { logout } = useAuth();
 
-  const handleSignOut = async () => {
-    try {
-      router.replace('/(auth)');
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
+  const handleSignOut = () => {
+    Alert.alert(
+      "Confirm Sign Out",
+      "Are you sure you want to sign out?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Sign Out",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await logout();
+              router.replace("/(auth)");
+            } catch (error) {
+              console.error("Error signing out:", error);
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
   };
 
   const styles = createStyles(theme);
@@ -36,6 +56,6 @@ const createStyles = (theme: any) =>
     },
     buttonText: {
       color: theme.background,
-      fontWeight: 'bold',
+      fontWeight: "bold",
     },
   });
