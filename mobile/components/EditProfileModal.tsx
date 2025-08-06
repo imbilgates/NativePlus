@@ -13,7 +13,6 @@ import {
   Pressable,
 } from "react-native";
 import Modal from "react-native-modal";
-import { Button } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import { useTheme } from "@/context/ThemeContext";
@@ -363,7 +362,7 @@ const createStyles = (theme: any) =>
       padding: 16,
     },
     inlineDatePicker: {
-      height: 200,
+      height: 120,
     },
     datePickerDoneButton: {
       backgroundColor: theme.primary,
