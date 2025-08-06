@@ -20,7 +20,13 @@ const SafeAreaWrapper: React.FC<SafeAreaWrapperProps> = ({ children }) => {
         backgroundColor: theme.background,
       }}
     >
-      <StatusBar style={theme.name === "dark" || theme.name === "forest" ? "light" : "dark"} />
+
+      {/* 
+        The StatusBar style is set to "light" for dark backgrounds so the text/icons are visible.
+        "forest" is included because its background is also dark, so we want light content.
+        If you want to generalize, you could check the background color or add a property to the theme.
+      */}
+      <StatusBar style={theme.name === "dark" || theme.name === "forest" || theme.name === "coffee" ? "light" : "dark"} />
       {children}
     </View>
   );

@@ -10,8 +10,8 @@ import {
   ScrollView,
 } from "react-native";
 import { Article, NewsApiResponse } from "../types/news";
-
 import { useTheme } from "@/context/ThemeContext";
+import NewsDetailModal from "./NewsDetailModal";
 
 const API_KEY = "fefd22d9502c4c659eb59e93c43cec8b";
 
@@ -29,6 +29,8 @@ const NewsFeed = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState("general");
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
 
   const { theme } = useTheme();
 
@@ -82,7 +84,7 @@ const NewsFeed = () => {
             <Text
               style={[
                 styles.categoryText,
-                cat === category && styles.activeText,
+                { color: cat === category ? theme.background : theme.text },
               ]}
             >
               {cat.toUpperCase()}
@@ -95,7 +97,13 @@ const NewsFeed = () => {
         data={articles}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item }) => (
-          <View style={[styles.card, { backgroundColor: theme.background }]}>
+          <TouchableOpacity
+            style={[styles.card, { backgroundColor: theme.background }]}
+            onPress={() => {
+              setSelectedArticle(item);
+              setIsDetailModalVisible(true);
+            }}
+          >
             {item.urlToImage && (
               <Image source={{ uri: item.urlToImage }} style={styles.image} />
             )}
@@ -108,8 +116,17 @@ const NewsFeed = () => {
             >
               {item.description}
             </Text>
-          </View>
+          </TouchableOpacity>
         )}
+      />
+
+      <NewsDetailModal
+        isVisible={isDetailModalVisible}
+        onClose={() => {
+          setIsDetailModalVisible(false);
+          setSelectedArticle(null);
+        }}
+        article={selectedArticle}
       />
     </View>
   );

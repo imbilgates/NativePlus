@@ -48,14 +48,24 @@ export default SignOutButton;
 const createStyles = (theme: any) =>
   StyleSheet.create({
     button: {
-      backgroundColor: theme.primary,
-      paddingVertical: 10,
+      backgroundColor: theme.error,
+      paddingVertical: 12,
       paddingHorizontal: 20,
-      borderRadius: 20,
-      marginTop: 20,
+      borderRadius: 25,
+      flex: 1,
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
     },
     buttonText: {
       color: theme.background,
-      fontWeight: "bold",
+      fontSize: 16,
+      fontWeight: "600",
+      textAlign: "center",
     },
   });

@@ -6,6 +6,7 @@ export interface UserType {
   name: string;
   email: string;
   profileImage: string;
+  dateOfBirth?: string;
 }
 
 type AuthContextType = {
@@ -13,6 +14,7 @@ type AuthContextType = {
   loading: boolean;
   login: (user: UserType) => Promise<void>;
   logout: () => Promise<void>;
+  updateUser: (updatedUser: UserType) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -54,8 +56,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null);
   };
 
+  const updateUser = async (updatedUser: UserType) => {
+    await AsyncStorage.setItem("user", JSON.stringify(updatedUser));
+    setUser(updatedUser);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

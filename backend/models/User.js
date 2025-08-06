@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema(
     },
     dateOfBirth: {
       type: Date,
-      require: false
+      required: false
     },
   },
   { timestamps: true }

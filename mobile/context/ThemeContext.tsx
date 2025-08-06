@@ -11,9 +11,9 @@ import {
   DarkTheme,
   CoffeeTheme,
   ForestTheme,
-  SunsetTheme,
 } from "../constants/theme";
 import { ThemeType, ThemeName } from "../types/theme";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface ThemeContextType {
   theme: ThemeType;
@@ -24,14 +24,41 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const systemTheme = useColorScheme(); // 'light' or 'dark'
-  const [customTheme, setCustomTheme] = useState<ThemeName>(null);
+  const [customTheme, setCustomThemeState] = useState<ThemeName>(null);
+
+  // Load theme from AsyncStorage on mount
+  React.useEffect(() => {
+    (async () => {
+      try {
+        const storedTheme = await AsyncStorage.getItem('APP_THEME');
+        if (storedTheme) {
+          setCustomThemeState(storedTheme as ThemeName);
+        }
+      } catch (e) {
+        // handle error if needed
+      }
+    })();
+  }, []);
+
+  // Save theme to AsyncStorage whenever it changes
+  const setCustomTheme = React.useCallback(async (themeName: ThemeName) => {
+    setCustomThemeState(themeName);
+    try {
+      if (themeName) {
+        await AsyncStorage.setItem('APP_THEME', themeName);
+      } else {
+        await AsyncStorage.removeItem('APP_THEME');
+      }
+    } catch (e) {
+      // handle error if needed
+    }
+  }, []);
 
   const theme = useMemo((): ThemeType => {
     if (customTheme === "coffee") return CoffeeTheme;
     if (customTheme === "dark") return DarkTheme;
     if (customTheme === "light") return LightTheme;
     if (customTheme === "forest") return ForestTheme;
-    if (customTheme === "sunset") return SunsetTheme;
 
     return systemTheme === "dark" ? DarkTheme : LightTheme;
   }, [customTheme, systemTheme]);

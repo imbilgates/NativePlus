@@ -19,25 +19,34 @@ const LoginPage = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string>("");
 
-    const { login } = useAuth();
+  // Use theme.text for placeholder color. theme.name is not a color, it's a string like 'light' or 'dark'.
+  // Using theme.name as a color will cause the placeholder to be invisible or default to black.
 
+  const validateEmail = (email: string) => {
+    return /\S+@\S+\.\S+/.test(email);
+  };
+
+  const { login } = useAuth();
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert("Missing Fields", "Please fill in both email and password.");
+      setError("Please fill in both email and password.");
+      return;
+    }
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address.");
       return;
     }
     try {
       const user = await loginUser({ email, password });
-       await login(user); 
+      await login(user);
+      setError("");
       router.push("/(tabs)");
     } catch (err: any) {
       console.error("Login failed:", err?.response?.data || err.message);
-      Alert.alert(
-        "Login Failed",
-        err?.response?.data?.error || "Something went wrong"
-      );
+      setError(err?.response?.data?.error || "Something went wrong");
     }
   };
 
@@ -47,22 +56,25 @@ const LoginPage = () => {
       <Text style={{ color: theme.text }}>Login to your account</Text>
 
       <View style={styles.form}>
+        {error ? (
+          <Text style={{ color: 'red', marginBottom: 12, textAlign: 'center' }}>{error}</Text>
+        ) : null}
         <TextInput
           style={[styles.input, { color: theme.text }]}
           placeholder="Email"
-          placeholderTextColor={theme.text}
+          placeholderTextColor={theme.text + "66"}
           keyboardType="email-address"
           autoCapitalize="none"
           value={email}
-          onChangeText={setEmail}
+          onChangeText={text => { setEmail(text); setError(""); }}
         />
         <TextInput
           style={[styles.input, { color: theme.text }]}
           placeholder="Password"
-          placeholderTextColor={theme.text + "99"}
+          placeholderTextColor={theme.text + "66"}
           secureTextEntry
           value={password}
-          onChangeText={setPassword}
+          onChangeText={text => { setPassword(text); setError(""); }}
         />
         <TouchableOpacity
           onPress={handleLogin}

@@ -28,36 +28,53 @@ const SignupPage = () => {
     password: "",
     confirmPassword: "",
   });
+  const [error, setError] = useState<string>("");
+
+  // Use theme.text for placeholder color. theme.name is not a color, it's a string like 'light' or 'dark'.
+  // Using theme.name as a color will cause the placeholder to be invisible or default to black.
+
+  const validateEmail = (email: string) => {
+    // Simple email regex
+    return /\S+@\S+\.\S+/.test(email);
+  };
 
   const handleChange = (key: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
+    setError(""); // Clear error on change
   };
 
   const handleSignup = async () => {
     const { name, email, password, confirmPassword } = formData;
 
     if (!name || !email || !password || !confirmPassword) {
-      Alert.alert("All fields are required");
+      setError("All fields are required");
       return;
     }
-
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters");
+      return;
+    }
     if (password !== confirmPassword) {
-      Alert.alert("Passwords do not match");
+      setError("Passwords do not match");
       return;
     }
 
     try {
-      await registerUser( {
+      await registerUser({
         name,
         email,
         password,
       });
-
+      setError("");
       Alert.alert("Success", "Account created successfully");
       router.replace("/");
     } catch (err: any) {
       console.error(err);
-      Alert.alert("Error", err.response?.data?.error || "Signup failed");
+      setError(err.response?.data?.error || "Signup failed");
     }
   };
 
@@ -67,6 +84,9 @@ const SignupPage = () => {
       <Text style={{ color: theme.text }}>Join us today!</Text>
 
       <View style={styles.form}>
+        {error ? (
+          <Text style={{ color: 'red', marginBottom: 12, textAlign: 'center' }}>{error}</Text>
+        ) : null}
         <TextInput
           style={[styles.input, { color: theme.text }]}
           placeholder="Full Name"
@@ -77,7 +97,7 @@ const SignupPage = () => {
         <TextInput
           style={[styles.input, { color: theme.text }]}
           placeholder="Email"
-          placeholderTextColor={theme.name + "66"}
+          placeholderTextColor={theme.text + "66"}
           onChangeText={(text) => handleChange("email", text)}
           keyboardType="email-address"
           autoCapitalize="none"
@@ -85,14 +105,14 @@ const SignupPage = () => {
         <TextInput
           style={[styles.input, { color: theme.text }]}
           placeholder="Password"
-          placeholderTextColor={theme.name + "66"}
+          placeholderTextColor={theme.text + "66"}
           onChangeText={(text) => handleChange("password", text)}
           secureTextEntry
         />
         <TextInput
           style={[styles.input, { color: theme.text }]}
           placeholder="Confirm Password"
-          placeholderTextColor={theme.name + "66"}
+          placeholderTextColor={theme.text + "66"}
           onChangeText={(text) => handleChange("confirmPassword", text)}
           secureTextEntry
         />

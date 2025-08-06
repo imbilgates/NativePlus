@@ -23,3 +23,15 @@ export const getUserById = async (id) => {
   const response = await api.get(`/user/${id}`);
   return response.data;
 };
+
+// 📌 Update user by ID
+export const updateUser = async (id, updateData) => {
+  const response = await api.patch(`/user/${id}`, updateData);
+  return response.data;
+};
+
+// 📌 Delete user by ID
+export const deleteUser = async (id) => {
+  const response = await api.delete(`/user/${id}`);
+  return response.data;
+};
